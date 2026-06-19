@@ -70,9 +70,25 @@ asserts, label it `low_substance`.
 
 Hard examples to fill during annotation:
 
-1. TODO: paste a real ambiguous comment here and explain the final decision.
-2. TODO.
-3. TODO.
+1. `48597608`: "i have toyed around Tiny Llama 1.1B ... for the
+   'conversational brain' of NPCs in a game ... it was fun."
+   Possible labels: `low_substance` or `reasoned_opinion`. I labeled it
+   `low_substance` because naming a real model and use case is not enough by
+   itself; the comment does not explain what worked, what failed, or why the
+   result was useful beyond "it was fun."
+2. `48597584`: comment about noise-canceling earphones while riding a
+   motorcycle, including the claim that wearing headphones or earphones while
+   driving a motorcycle is illegal. Possible labels: `evidence_based` or
+   `reasoned_opinion`. I labeled it `reasoned_opinion` because it gives a
+   plausible safety and legal argument, but the legality claim is unsourced and
+   jurisdiction-dependent rather than concrete verifiable evidence.
+3. `48597362`: comment about doctors/scientists suggesting ice and head-cooling
+   devices in ambulances to reduce brain damage. Possible labels:
+   `reasoned_opinion` or `evidence_based`. I labeled it `reasoned_opinion`
+   because it contains medical detail, but the evidence is secondhand and heavily
+   hedged ("some doctors/scientist explained," "I don't know if they managed to
+   get enough data"). It is reasoning from a plausible claim, not strong
+   evidence.
 
 ## Data Collection Plan
 
@@ -138,8 +154,11 @@ before final annotation.
 ### Annotation assistance
 
 The repo includes a heuristic pre-labeler to speed up review. These labels are
-not final. I will review and correct every row, keep notes for hard examples,
-and disclose the pre-labeling in the README AI usage section.
+not final. I used parallel AI-assisted shard review to check all 240 labels,
+merge suggested corrections, keep notes for hard examples, and disclose that
+workflow in the README AI usage section. Before final submission, I should still
+spot-check the reviewed JSONL because AI assistance can miss context or apply
+the taxonomy inconsistently.
 
 ### Failure analysis
 

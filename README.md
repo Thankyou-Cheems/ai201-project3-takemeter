@@ -131,6 +131,18 @@ uv run takemeter-export-colab-csv \
 Target distribution: at least 200 labeled examples, with no single label above
 70% of the dataset. The preferred target is roughly 30-45% per label.
 
+Current reviewed JSONL distribution:
+
+| Label | Count | Share |
+| --- | ---: | ---: |
+| `reasoned_opinion` | 103 | 42.9% |
+| `evidence_based` | 85 | 35.4% |
+| `low_substance` | 52 | 21.7% |
+
+The current file `data/labeled/takemeter_hn_labeled.jsonl` was reviewed with
+AI assistance across four dataset shards. Before final submission, I should
+spot-check the labels and update any disagreements.
+
 ## Fine-Tuning Approach
 
 The planned base model is `distilbert-base-uncased`, trained in the course
@@ -247,6 +259,9 @@ export repeatable.
 2. Codex generated a heuristic pre-labeling script. These are not final labels:
    every row must be manually reviewed and corrected before submission. Any
    pre-labeling assistance should be disclosed in the final report.
+3. Codex ran four parallel sub-agents to review the 240 rough labels by shard.
+   I merged their suggested corrections into `takemeter_hn_labeled.jsonl` and
+   kept `review_status=reviewed_ai_assisted` so the dataset history is explicit.
 
 ## Submission Checklist
 
