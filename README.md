@@ -169,46 +169,55 @@ Use `baseline_prompt.md` as the prompt source for Colab Section 5.
 
 ## Evaluation Report
 
-Fill this section after running Colab Sections 4 and 6. Commit
-`reports/evaluation_results.json` and `reports/confusion_matrix.png` after
-downloading them from Colab.
+Colab outputs are committed in `reports/evaluation_results.json` and
+`reports/confusion_matrix.png`.
 
 ### Metrics
 
 | Model | Accuracy | Notes |
 | --- | ---: | --- |
-| Zero-shot Groq baseline | TODO | Fill from Colab Section 5 |
-| Fine-tuned DistilBERT | TODO | Fill from Colab Section 6 |
+| Zero-shot Groq baseline | 0.583 | 36/36 parseable responses |
+| Fine-tuned DistilBERT | 0.417 | 3 epochs, default course hyperparameters |
 
 ### Per-Class Metrics
 
 | Model | Label | Precision | Recall | F1 |
 | --- | --- | ---: | ---: | ---: |
-| Baseline | evidence_based | TODO | TODO | TODO |
-| Baseline | reasoned_opinion | TODO | TODO | TODO |
-| Baseline | low_substance | TODO | TODO | TODO |
-| Fine-tuned | evidence_based | TODO | TODO | TODO |
-| Fine-tuned | reasoned_opinion | TODO | TODO | TODO |
-| Fine-tuned | low_substance | TODO | TODO | TODO |
+| Baseline | evidence_based | 1.00 | 0.23 | 0.38 |
+| Baseline | reasoned_opinion | 0.59 | 0.67 | 0.62 |
+| Baseline | low_substance | 0.50 | 1.00 | 0.67 |
+| Fine-tuned | evidence_based | 0.36 | 0.77 | 0.49 |
+| Fine-tuned | reasoned_opinion | 0.62 | 0.33 | 0.43 |
+| Fine-tuned | low_substance | 0.00 | 0.00 | 0.00 |
 
 ### Fine-Tuned Confusion Matrix
 
-Write the final matrix as a markdown table here, not only as an image.
-
 | True \ Predicted | evidence_based | reasoned_opinion | low_substance |
 | --- | ---: | ---: | ---: |
-| evidence_based | TODO | TODO | TODO |
-| reasoned_opinion | TODO | TODO | TODO |
-| low_substance | TODO | TODO | TODO |
+| evidence_based | 10 | 3 | 0 |
+| reasoned_opinion | 10 | 5 | 0 |
+| low_substance | 8 | 0 | 0 |
 
 ### Failure Analysis
 
-Add at least 3 wrong predictions after Colab evaluation.
+The fine-tuned model performed worse than the zero-shot baseline: 41.7% accuracy
+versus 58.3%. The dominant failure mode is visible in the confusion matrix: the
+fine-tuned model never predicted `low_substance` on the test set. All 8 true
+`low_substance` examples were classified as `evidence_based`.
 
-1. TODO: quote or summarize the comment, true label, predicted label, and why it
-   failed.
-2. TODO.
-3. TODO.
+1. `low_substance -> evidence_based`: all 8 true low-substance comments were
+   predicted as evidence-based. This suggests the model learned a shortcut from
+   Hacker News surface features such as technical vocabulary, named tools, or
+   longer phrasing, rather than learning whether the comment actually contains
+   reusable reasoning.
+2. `reasoned_opinion -> evidence_based`: 10 of 15 reasoned-opinion comments were
+   predicted as evidence-based. This is the same boundary problem described in
+   `planning.md`: a plausible explanation or anecdote can look like evidence,
+   but the taxonomy requires inspectable support that directly backs the claim.
+3. `evidence_based -> reasoned_opinion`: 3 of 13 evidence-based comments were
+   predicted as reasoned-opinion. These likely contain evidence that is less
+   obvious than numbers, benchmarks, or links, so the model under-recognized
+   support expressed through mechanisms or comparisons.
 
 ### Sample Classifications
 
@@ -233,9 +242,19 @@ and displays the predicted label plus confidence scores.
 
 ## Reflection
 
-TODO after evaluation: explain what the model actually learned versus what the
-label taxonomy intended it to learn. Look for shortcuts such as comment length,
-technical vocabulary, or emotional wording.
+The model learned some distinction between `evidence_based` and
+`reasoned_opinion`, but it did not learn the intended three-way taxonomy. It
+collapsed `low_substance` into `evidence_based`, which means it likely overfit
+to Hacker News style cues: technical wording, specificity, or confident tone.
+The intended behavior was to separate concrete support from plausible reasoning
+and unsupported reaction. The learned behavior appears closer to "technical or
+specific-sounding comments are evidence-based," even when the comment lacks a
+real argument.
+
+To improve this, I would collect more clear `low_substance` examples from Hacker
+News, especially low-substance comments that still mention technical topics, and
+add more hard negatives where tool names, numbers, or links appear without
+actually supporting a claim.
 
 ## Spec Reflection
 
