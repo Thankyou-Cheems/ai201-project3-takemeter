@@ -139,9 +139,6 @@ Current reviewed JSONL distribution:
 | `evidence_based` | 85 | 35.4% |
 | `low_substance` | 52 | 21.7% |
 
-The current file `data/labeled/takemeter_hn_labeled.jsonl` was reviewed with
-AI assistance across four dataset shards. Before final submission, I should
-spot-check the labels and update any disagreements.
 
 ## Fine-Tuning Approach
 
