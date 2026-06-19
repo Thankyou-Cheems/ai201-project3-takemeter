@@ -1,4 +1,7 @@
+import csv
+
 from ai201_project3_takemeter.collect_hn import clean_hn_text
+from ai201_project3_takemeter.data_io import read_jsonl, write_colab_csv, write_jsonl
 from ai201_project3_takemeter.validate_dataset import validate_rows
 
 
@@ -39,3 +42,36 @@ def test_validate_rows_rejects_unreviewed_queue() -> None:
 
     assert not any("human review" in error for error in errors)
     assert any("human review" in error for error in strict_errors)
+
+
+def test_jsonl_round_trip_preserves_text_metadata(tmp_path) -> None:
+    path = tmp_path / "dataset.jsonl"
+    rows = [
+        {
+            "text": 'Comma, quote " and newline\nstay inside one JSON object.',
+            "label": "reasoned_opinion",
+            "source": "https://news.ycombinator.com/item?id=1",
+        }
+    ]
+
+    write_jsonl(rows, path)
+
+    assert read_jsonl(path) == rows
+
+
+def test_write_colab_csv_exports_minimal_columns(tmp_path) -> None:
+    path = tmp_path / "colab.csv"
+    rows = [
+        {
+            "text": "A detailed comment.",
+            "label": "evidence_based",
+            "source": "metadata stays out of Colab CSV",
+        }
+    ]
+
+    write_colab_csv(rows, path)
+
+    with path.open(newline="", encoding="utf-8") as file:
+        exported = list(csv.DictReader(file))
+
+    assert exported == [{"text": "A detailed comment.", "label": "evidence_based"}]

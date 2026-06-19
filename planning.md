@@ -11,7 +11,9 @@ technical or product claim instead of simply reacting to it.
 
 The data will come from public comments collected through the public HN Search
 API. I will not use private messages, authenticated spaces, or comments from
-closed communities.
+closed communities. I will store the dataset as JSONL because each comment can
+contain commas, quotes, links, HTML fragments, and metadata; one JSON object per
+line is less fragile than hand-edited CSV for this kind of text data.
 
 ## Labels
 
@@ -81,14 +83,18 @@ fairly. The final labeled dataset must contain at least 200 examples.
 Commands:
 
 ```bash
-uv run takemeter-collect-hn --target 240 --output data/raw/hackernews_comments.csv
+uv run takemeter-collect-hn --target 240 --output data/raw/hackernews_comments.jsonl
 uv run python -m ai201_project3_takemeter.heuristic_prelabler \
-  --input data/raw/hackernews_comments.csv \
-  --output data/labeled/takemeter_hn_review_queue.csv
+  --input data/raw/hackernews_comments.jsonl \
+  --output data/labeled/takemeter_hn_review_queue.jsonl
 ```
 
 I will manually review every row in the review queue, correct labels, and save
-the final file as `data/labeled/takemeter_hn_labeled.csv`.
+the final file as `data/labeled/takemeter_hn_labeled.jsonl`.
+
+For the course Colab notebook, I will export a minimal `text,label` CSV from the
+reviewed JSONL. The JSONL remains the source of truth; the CSV is only a
+notebook compatibility artifact.
 
 Target distribution: no label above 70% of the dataset. If one label is
 underrepresented after 200 examples, I will collect more comments and search for

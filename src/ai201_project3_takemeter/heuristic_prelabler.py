@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import re
 from pathlib import Path
 
+from ai201_project3_takemeter.data_io import read_rows, write_jsonl
 from ai201_project3_takemeter.labels import LABEL_NAMES
 
-DEFAULT_INPUT = Path("data/raw/hackernews_comments.csv")
-DEFAULT_OUTPUT = Path("data/labeled/takemeter_hn_review_queue.csv")
+DEFAULT_INPUT = Path("data/raw/hackernews_comments.jsonl")
+DEFAULT_OUTPUT = Path("data/labeled/takemeter_hn_review_queue.jsonl")
 EVIDENCE_RE = re.compile(
     r"\b(benchmark|latency|p95|because|for example|measured|data|study|"
     r"numbers?|percent|ms|seconds?|source|compare|tested|evidence)\b",
@@ -56,9 +56,8 @@ def rough_label(text: str) -> tuple[str, str]:
 
 
 def prelabel(input_path: Path, output_path: Path) -> int:
-    """Write a rough pre-labeled CSV for manual review."""
-    with input_path.open(newline="", encoding="utf-8") as file:
-        rows = list(csv.DictReader(file))
+    """Write rough pre-labels as JSONL for manual review."""
+    rows = read_rows(input_path)
 
     for row in rows:
         label, note = rough_label(row.get("text", ""))
@@ -66,12 +65,7 @@ def prelabel(input_path: Path, output_path: Path) -> int:
         row["notes"] = note
         row["review_status"] = "needs_human_review"
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = list(rows[0].keys()) if rows else ["text", "label", "notes"]
-    with output_path.open("w", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
+    write_jsonl(rows, output_path)
     return len(rows)
 
 
@@ -96,7 +90,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Allowed final labels: {', '.join(LABEL_NAMES)}")
     print(
         "Review every row, then save the final file as "
-        "data/labeled/takemeter_hn_labeled.csv"
+        "data/labeled/takemeter_hn_labeled.jsonl"
     )
     return 0
 

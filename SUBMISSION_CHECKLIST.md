@@ -8,15 +8,16 @@
 - [ ] Create the review queue:
   `uv run python -m ai201_project3_takemeter.heuristic_prelabler`.
 - [ ] Manually review every row.
-- [ ] Save final dataset as `data/labeled/takemeter_hn_labeled.csv`.
+- [ ] Save final dataset as `data/labeled/takemeter_hn_labeled.jsonl`.
 - [ ] Add at least 3 hard examples to `planning.md`.
 - [ ] Run `uv run takemeter-validate-dataset`.
+- [ ] Export the temporary local Colab CSV with `uv run takemeter-export-colab-csv`.
 
 ## In Colab
 
 - [ ] Make a copy of the TakeMeter starter notebook.
 - [ ] Set runtime to T4 GPU.
-- [ ] Section 1: define label map and upload final CSV.
+- [ ] Section 1: define label map and upload `data/colab/takemeter_hn_labeled_for_colab.csv`.
 - [ ] Section 2: split/tokenize and confirm distribution.
 - [ ] Section 5: add Groq key and baseline prompt from `baseline_prompt.md`.
 - [ ] Section 3: fine-tune DistilBERT.

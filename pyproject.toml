@@ -28,6 +28,7 @@ inference = [
 
 [project.scripts]
 takemeter-collect-hn = "ai201_project3_takemeter.collect_hn:main"
+takemeter-export-colab-csv = "ai201_project3_takemeter.export_colab_csv:main"
 takemeter-validate-dataset = "ai201_project3_takemeter.validate_dataset:main"
 
 [build-system]

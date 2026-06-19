@@ -3,16 +3,17 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import html
 import re
 from pathlib import Path
 
 import requests
 
+from ai201_project3_takemeter.data_io import write_jsonl
+
 ALGOLIA_API = "https://hn.algolia.com/api/v1/search_by_date"
 COMMENT_MIN_CHARS = 80
-DEFAULT_OUTPUT = Path("data/raw/hackernews_comments.csv")
+DEFAULT_OUTPUT = Path("data/raw/hackernews_comments.jsonl")
 TAG_RE = re.compile(r"<[^>]+>")
 SPACE_RE = re.compile(r"\s+")
 
@@ -79,27 +80,6 @@ def collect_comments(
     return rows
 
 
-def write_csv(rows: list[dict[str, str]], output: Path) -> None:
-    """Write collected comments to CSV."""
-    output.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = [
-        "id",
-        "source",
-        "story_id",
-        "story_title",
-        "author",
-        "created_at",
-        "text",
-        "label",
-        "notes",
-        "review_status",
-    ]
-    with output.open("w", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
-
-
 def build_parser() -> argparse.ArgumentParser:
     """Build the CLI parser."""
     parser = argparse.ArgumentParser(
@@ -125,7 +105,7 @@ def main(argv: list[str] | None = None) -> int:
         min_chars=args.min_chars,
         pages=args.pages,
     )
-    write_csv(rows, args.output)
+    write_jsonl(rows, args.output)
     print(f"Wrote {len(rows)} comments to {args.output}")
     return 0
 

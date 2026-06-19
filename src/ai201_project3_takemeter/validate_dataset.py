@@ -3,20 +3,14 @@
 from __future__ import annotations
 
 import argparse
-import csv
 from collections import Counter
 from pathlib import Path
 
+from ai201_project3_takemeter.data_io import read_rows
 from ai201_project3_takemeter.labels import LABEL_NAMES
 
 REQUIRED_COLUMNS = {"text", "label"}
-DEFAULT_DATASET = Path("data/labeled/takemeter_hn_labeled.csv")
-
-
-def read_rows(path: Path) -> list[dict[str, str]]:
-    """Read a CSV into dictionaries."""
-    with path.open(newline="", encoding="utf-8") as file:
-        return list(csv.DictReader(file))
+DEFAULT_DATASET = Path("data/labeled/takemeter_hn_labeled.jsonl")
 
 
 def validate_rows(
@@ -29,7 +23,7 @@ def validate_rows(
     """Return validation errors for the assignment requirements."""
     errors: list[str] = []
     if not rows:
-        return ["CSV has no data rows."]
+        return ["Dataset has no data rows."]
 
     columns = set(rows[0])
     missing = REQUIRED_COLUMNS - columns
@@ -90,7 +84,7 @@ def print_distribution(rows: list[dict[str, str]]) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     """Build the CLI parser."""
-    parser = argparse.ArgumentParser(description="Validate a TakeMeter CSV dataset.")
+    parser = argparse.ArgumentParser(description="Validate a TakeMeter JSONL dataset.")
     parser.add_argument("path", nargs="?", type=Path, default=DEFAULT_DATASET)
     parser.add_argument("--min-examples", type=int, default=200)
     parser.add_argument(

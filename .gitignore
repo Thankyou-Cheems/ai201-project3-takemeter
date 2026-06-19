@@ -17,3 +17,6 @@ wheels/
 # or repo policy explicitly asks for the model weights.
 models/takemeter/*
 !models/takemeter/README.md
+
+# Generated only when adapting the JSONL source dataset for Colab upload.
+data/colab/*.csv

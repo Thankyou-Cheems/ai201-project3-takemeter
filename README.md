@@ -84,35 +84,48 @@ The data source is public Hacker News comments collected through the public HN
 Search API. No private channels, login-only content, or scraped personal data
 are used.
 
+Primary dataset format: JSONL. Each row is one JSON object, which is safer for
+long community comments containing commas, quotes, newlines, URLs, and metadata.
+The course Colab notebook expects CSV, so this repo exports a temporary
+`text,label` CSV from the reviewed JSONL only when needed.
+
 Collect a review queue:
 
 ```bash
-uv run takemeter-collect-hn --target 240 --output data/raw/hackernews_comments.csv
+uv run takemeter-collect-hn --target 240 --output data/raw/hackernews_comments.jsonl
 uv run python -m ai201_project3_takemeter.heuristic_prelabler \
-  --input data/raw/hackernews_comments.csv \
-  --output data/labeled/takemeter_hn_review_queue.csv
+  --input data/raw/hackernews_comments.jsonl \
+  --output data/labeled/takemeter_hn_review_queue.jsonl
 ```
 
-Then manually review every row in `data/labeled/takemeter_hn_review_queue.csv`.
+Then manually review every row in `data/labeled/takemeter_hn_review_queue.jsonl`.
 Correct the labels, write notes for at least 3 genuinely hard examples, set
 `review_status` to `reviewed`, and save the final file as:
 
 ```text
-data/labeled/takemeter_hn_labeled.csv
+data/labeled/takemeter_hn_labeled.jsonl
 ```
 
 Check the rough queue distribution before review:
 
 ```bash
 uv run takemeter-validate-dataset \
-  data/labeled/takemeter_hn_review_queue.csv \
+  data/labeled/takemeter_hn_review_queue.jsonl \
   --allow-unreviewed
 ```
 
-Validate before uploading to Colab:
+Validate the reviewed JSONL:
 
 ```bash
-uv run takemeter-validate-dataset data/labeled/takemeter_hn_labeled.csv
+uv run takemeter-validate-dataset data/labeled/takemeter_hn_labeled.jsonl
+```
+
+Export the Colab upload CSV from the reviewed JSONL:
+
+```bash
+uv run takemeter-export-colab-csv \
+  --input data/labeled/takemeter_hn_labeled.jsonl \
+  --output data/colab/takemeter_hn_labeled_for_colab.csv
 ```
 
 Target distribution: at least 200 labeled examples, with no single label above
@@ -121,9 +134,10 @@ Target distribution: at least 200 labeled examples, with no single label above
 ## Fine-Tuning Approach
 
 The planned base model is `distilbert-base-uncased`, trained in the course
-starter Colab notebook with the labeled CSV above. The notebook handles the
-70/15/15 train-validation-test split, tokenization, training loop, metrics, and
-confusion matrix.
+starter Colab notebook with the exported Colab CSV. The JSONL file remains the
+source of truth; the CSV is only an adapter for the notebook. The notebook
+handles the 70/15/15 train-validation-test split, tokenization, training loop,
+metrics, and confusion matrix.
 
 Default hyperparameters from the course notebook:
 
@@ -220,9 +234,10 @@ The spec helped by forcing the label decision rules before training. That makes
 the annotation process less subjective and gives the evaluation report a clear
 standard for failure analysis.
 
-One planned divergence is using the Hacker News Firebase API and local `uv`
-helper scripts outside Colab. The starter notebook still handles training, but
-the local scripts make data collection, review, and validation repeatable.
+One planned divergence is using JSONL as the source dataset format with local
+`uv` helper scripts outside Colab. The starter notebook still handles training,
+but the local scripts make data collection, review, validation, and Colab CSV
+export repeatable.
 
 ## AI Usage
 
@@ -237,7 +252,10 @@ the local scripts make data collection, review, and validation repeatable.
 
 - GitHub repository link.
 - `planning.md` in the repo root.
-- Final labeled dataset at `data/labeled/takemeter_hn_labeled.csv`.
+- Final labeled dataset at `data/labeled/takemeter_hn_labeled.jsonl`.
+- Temporary local Colab upload CSV at
+  `data/colab/takemeter_hn_labeled_for_colab.csv` generated from JSONL. This is
+  ignored by git unless the grader explicitly asks for it.
 - `README.md` completed with metrics, confusion matrix table, failures, sample
   classifications, reflection, spec reflection, and AI usage.
 - `reports/evaluation_results.json` and `reports/confusion_matrix.png`.
