@@ -148,6 +148,17 @@ failure worth analyzing rather than hiding. Likely causes would be noisy labels,
 too few examples for one class, or a label boundary that is too subtle for 200
 examples.
 
+## Baseline Reflection
+
+The zero-shot Groq `llama-3.3-70b-versatile` baseline reached 58.3% accuracy on
+the 36-example test split, with 36/36 parseable responses. The baseline was very
+conservative about `evidence_based`: precision was 1.00, but recall was only
+0.23, meaning it predicted `evidence_based` only when evidence was extremely
+obvious. It also over-predicted `low_substance`: recall was 1.00, but precision
+was 0.50. My hypothesis is that the baseline relies heavily on surface tone and
+obvious evidence markers, so fine-tuning should help it learn the
+project-specific boundary between `evidence_based` and `reasoned_opinion`.
+
 ## AI Tool Plan
 
 ### Label stress-testing
