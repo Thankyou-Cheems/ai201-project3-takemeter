@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets and local runtime artifacts
+.env
+*.log
+
+# Fine-tuned model exports can be large. Commit only if your course submission
+# or repo policy explicitly asks for the model weights.
+models/takemeter/*
+!models/takemeter/README.md
