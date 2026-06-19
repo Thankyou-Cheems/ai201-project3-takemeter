@@ -112,9 +112,15 @@ For the course Colab notebook, I will export a minimal `text,label` CSV from the
 reviewed JSONL. The JSONL remains the source of truth; the CSV is only a
 notebook compatibility artifact.
 
-Target distribution: no label above 70% of the dataset. If one label is
-underrepresented after 200 examples, I will collect more comments and search for
-examples that clearly fit the underrepresented label before moving to training.
+Target distribution: no label above 70% of the dataset, and ideally each label
+should have at least 40 examples so the model sees enough boundary cases. For a
+240-example dataset, my target is roughly 70-95 examples for each of
+`evidence_based` and `reasoned_opinion`, with at least 40-60 examples of
+`low_substance`. The reviewed dataset currently has 85 `evidence_based`, 103
+`reasoned_opinion`, and 52 `low_substance` examples. If one label becomes
+underrepresented after further review, I will collect more comments and search
+for examples that clearly fit the underrepresented label before moving to
+training.
 
 ## Evaluation Metrics
 
