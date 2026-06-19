@@ -221,11 +221,14 @@ fine-tuned model never predicted `low_substance` on the test set. All 8 true
 
 ### Sample Classifications
 
-Run 3-5 new comments through the fine-tuned model and record the output.
+I ran four new comments through the fine-tuned model after training:
 
 | Comment summary | Predicted label | Confidence | Reasonable? |
 | --- | --- | ---: | --- |
-| TODO | TODO | TODO | TODO |
+| Benchmark critique: cold-start numbers are compared against warm runs, so latency is not measured consistently. | `evidence_based` | 0.354 | Yes. The comment gives a specific methodological reason. |
+| Production caution: the idea is useful, but debugging still sounds too fragile for a billing path. | `reasoned_opinion` | 0.345 | Yes. The comment gives plausible reasoning without concrete evidence. |
+| Unsupported dismissal: "This is just hype. Nobody serious is going to use this." | `evidence_based` | 0.346 | No. This should be `low_substance`; the error matches the confusion matrix pattern where the model never predicts `low_substance`. |
+| Technical correction: the README's npm command is wrong because the package is published under a different name. | `evidence_based` | 0.357 | Yes. The comment gives a concrete, checkable reason. |
 
 ## Local Interface
 
