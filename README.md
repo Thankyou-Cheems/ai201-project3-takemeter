@@ -281,17 +281,3 @@ export repeatable.
 3. Codex ran four parallel sub-agents to review the 240 rough labels by shard.
    I merged their suggested corrections into `takemeter_hn_labeled.jsonl` and
    then manually marked the final reviewed rows with `review_status=reviewed`.
-
-## Submission Checklist
-
-- GitHub repository link.
-- `planning.md` in the repo root.
-- Final labeled dataset at `data/labeled/takemeter_hn_labeled.jsonl`.
-- Temporary local Colab upload CSV at
-  `data/colab/takemeter_hn_labeled_for_colab.csv` generated from JSONL. This is
-  ignored by git unless the grader explicitly asks for it.
-- `README.md` completed with metrics, confusion matrix table, failures, sample
-  classifications, reflection, spec reflection, and AI usage.
-- `reports/evaluation_results.json` and `reports/confusion_matrix.png`.
-- 3-5 minute demo video showing classifications, one correct prediction, one
-  incorrect prediction, and the evaluation report.
