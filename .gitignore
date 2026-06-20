@@ -20,3 +20,6 @@ models/takemeter/*
 
 # Generated only when adapting the JSONL source dataset for Colab upload.
 data/colab/*.csv
+
+# Local recording notes only; not part of the submitted repo.
+demo_video_script.md

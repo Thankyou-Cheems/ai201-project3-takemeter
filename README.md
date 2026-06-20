@@ -280,7 +280,7 @@ export repeatable.
    pre-labeling assistance should be disclosed in the final report.
 3. Codex ran four parallel sub-agents to review the 240 rough labels by shard.
    I merged their suggested corrections into `takemeter_hn_labeled.jsonl` and
-   kept `review_status=reviewed_ai_assisted` so the dataset history is explicit.
+   then manually marked the final reviewed rows with `review_status=reviewed`.
 
 ## Submission Checklist
 
