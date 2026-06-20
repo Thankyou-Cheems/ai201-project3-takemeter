@@ -278,6 +278,3 @@ export repeatable.
 2. Codex generated a heuristic pre-labeling script. These are not final labels:
    every row must be manually reviewed and corrected before submission. Any
    pre-labeling assistance should be disclosed in the final report.
-3. Codex ran four parallel sub-agents to review the 240 rough labels by shard.
-   I merged their suggested corrections into `takemeter_hn_labeled.jsonl` and
-   then manually marked the final reviewed rows with `review_status=reviewed`.
